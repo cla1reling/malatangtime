@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Malatang Study Timer</title>
+  <meta name="description" content="Build a bowl of malatang. The heavier your bowl, the longer you study while it simmers." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍲</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Gaegu:wght@400;700&family=ZCOOL+KuaiLe&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="shop">
+    <div class="awning" aria-hidden="true"></div>
+    <div class="sign">
+      <span class="sign-bowl" aria-hidden="true">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#e8603c"/><path d="M10 24h28a14 14 0 0 1-28 0z" fill="#fff"/><path d="M18 18c-2-3 2-5 0-8M24 18c-2-3 2-5 0-8M30 18c-2-3 2-5 0-8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+      </span>
+      <h1>Study Malatang <span class="cn">麻辣烫</span></h1>
+    </div>
+    <ol class="steps" id="steps">
+      <li data-step="broth"><span>1</span>Broth</li>
+      <li data-step="shelf"><span>2</span>Veggies</li>
+      <li data-step="freezer"><span>3</span>Meats</li>
+      <li data-step="weigh"><span>4</span>Weigh</li>
+      <li data-step="cook"><span>5</span>Study</li>
+    </ol>
+  </header>
+
+  <div class="host">
+    <div class="mascot" id="mascot"></div>
+    <p class="bubble" id="bubble" aria-live="polite">Welcome in! Pick a soup base~</p>
+  </div>
+
+  <main>
+    <!-- 1. BROTH -->
+    <section class="stage" id="stage-broth" data-stage="broth">
+      <h2 class="stage-title">Choose your soup base <small>选汤底</small></h2>
+      <div class="broth-grid" id="brothGrid"></div>
+      <div class="stage-actions">
+        <button class="btn primary" id="toShelf" disabled>Next: grab veggies →</button>
+      </div>
+    </section>
+
+    <!-- 2. SHELF -->
+    <section class="stage" id="stage-shelf" data-stage="shelf" hidden>
+      <h2 class="stage-title">Open shelf <small>drag with the tongs into your bowl</small></h2>
+      <div class="shelf-unit" data-tongs>
+        <div class="shelf-sign">Fresh &amp; Chilled <span class="cn">蔬菜豆制品</span></div>
+        <div id="shelves"></div>
+      </div>
+    </section>
+
+    <!-- 3. FREEZER -->
+    <section class="stage" id="stage-freezer" data-stage="freezer" hidden>
+      <h2 class="stage-title">Meat freezer <small>slide a door open, then grab some slices</small></h2>
+      <div class="freezer" id="freezer" data-tongs>
+        <div class="freezer-top"><span class="snow">❄</span> FROZEN MEATS <span class="cn">冻肉</span> <span class="snow">❄</span></div>
+        <div class="freezer-window">
+          <div class="compartments" id="compartments"></div>
+          <button class="door door-l" id="doorL" aria-label="Slide left door"><span class="handle"></span><span class="frost"></span></button>
+          <button class="door door-r" id="doorR" aria-label="Slide right door"><span class="handle"></span><span class="frost"></span></button>
+          <div class="fog" id="fog" aria-hidden="true"></div>
+        </div>
+        <div class="freezer-base"><span class="vent"></span><span class="temp">-18°C</span></div>
+      </div>
+    </section>
+
+    <!-- 4. WEIGH -->
+    <section class="stage" id="stage-weigh" data-stage="weigh" hidden>
+      <h2 class="stage-title">Weigh your bowl <small>heavier bowl = longer study</small></h2>
+      <div class="weigh-layout">
+        <div class="scale-area">
+          <div class="scale-bowl" id="scaleBowl"></div>
+          <div class="scale" id="scale">
+            <div class="scale-plate"></div>
+            <div class="scale-body">
+              <div class="lcd"><span id="lcd">0</span><small>g</small></div>
+              <span class="scale-brand">TARE · KG/G</span>
+            </div>
+          </div>
+        </div>
+        <div class="receipt" id="receipt">
+          <div class="receipt-head">
+            <strong>Order ticket</strong>
+            <span id="receiptBroth"></span>
+          </div>
+          <ul class="receipt-list" id="receiptList"></ul>
+          <div class="receipt-total"><span>Total weight</span><strong id="receiptGrams">0 g</strong></div>
+          <fieldset class="rate">
+            <legend>Study pace</legend>
+            <label><input type="radio" name="rate" value="15" /> Chill <em>15 g / min</em></label>
+            <label><input type="radio" name="rate" value="10" checked /> Regular <em>10 g / min</em></label>
+            <label><input type="radio" name="rate" value="6" /> Exam week <em>6 g / min</em></label>
+          </fieldset>
+          <div class="study-time">Study time <strong id="studyTime">–</strong></div>
+          <div class="receipt-actions">
+            <button class="btn ghost" id="backToShelf">← Add more</button>
+            <button class="btn primary" id="startCook">Put it on the stove 🔥</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. COOK -->
+    <section class="stage" id="stage-cook" data-stage="cook" hidden>
+      <div class="cook-layout">
+        <div class="stove-area">
+          <div class="enjoy" id="enjoy" hidden>
+            <strong>Enjoy!</strong>
+            <span class="cn">开吃啦～</span>
+          </div>
+          <div class="pot-wrap" id="potWrap"></div>
+          <div class="stove">
+            <div class="grate"></div>
+            <div class="flames" id="flames"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="stove-body"><span class="knob"></span><span class="stove-label">GAS</span></div>
+          </div>
+        </div>
+        <aside class="timer-panel" id="timerPanel">
+          <div class="timer-date" id="timerDate"></div>
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+              <circle cx="100" cy="100" r="88" class="ring-bg" />
+              <circle cx="100" cy="100" r="88" class="ring-fg" id="ringFg" />
+            </svg>
+            <div class="ring-text">
+              <div class="clock" id="clock" role="timer" aria-live="off">00:00</div>
+              <div class="clock-sub" id="clockSub">simmering…</div>
+            </div>
+          </div>
+          <div class="timer-info" id="timerInfo"></div>
+          <div class="timer-actions" id="timerActions">
+            <button class="btn" id="pauseBtn">Pause</button>
+            <button class="btn ghost" id="stopBtn">Give up</button>
+          </div>
+          <div class="done-actions" id="doneActions" hidden>
+            <p id="doneText"></p>
+            <button class="btn primary" id="againBtn">Make another bowl 🍲</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- shared counter with the customer's bowl (shelf + freezer stages) -->
+  <footer class="counter" id="counter" hidden>
+    <div class="counter-info">
+      <div class="count" id="bowlCount">Empty bowl</div>
+      <button class="btn small ghost" id="undoBtn" disabled>↶ Undo</button>
+    </div>
+    <div class="basket-slot" id="basketSlot" data-tongs></div>
+    <div class="counter-nav">
+      <button class="btn ghost" id="counterBack">← Back</button>
+      <button class="btn primary" id="counterNext">Next →</button>
+    </div>
+  </footer>
+
+  <div id="tongs" class="tongs" aria-hidden="true"></div>
+  <div id="held" class="held" aria-hidden="true"></div>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="art.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
