@@ -8,9 +8,9 @@ The heavier the bowl, the longer you study.
 3. **Freezer**: slide a glass door open and grab pork belly, beef, lamb or chicken slices.
 4. **Weigh**: the bowl goes onto the scale. Each item has a realistic weight per grab (udon 200 g, corn 60 g, tofu puff 8 g…).
    - Study time = weight ÷ pace (Chill 15 g/min, Regular 10 g/min, Exam week 6 g/min), up to 5 hours.
-5. **Sauce bar 调料台**: a self-serve sauce counter with 15 sauce bins, 7 squeeze bottles, 9 oils/soys/vinegars,
-   10 fresh herbs & toppings and 9 dry seasonings. Hover for the name, flavor and spice level; click to add it to your
-   dipping bowl (ladle, scoop, squeeze, pour, tongs or shaker). "Try a House Blend" makes one of 3 recipes.
+5. **Sauce bar 调料台**: a self-serve sauce counter with 8 sauce bins, 4 squeeze bottles, 6 fresh herbs & toppings
+   and 6 dry seasonings. Hover for the name, flavor and spice level; click to add it to your dipping bowl
+   (ladle, scoop, squeeze, tongs, shaker or spoon). "Try a House Blend" makes one of 3 recipes.
 6. **Study**: the pot goes on the stove and the timer counts down. The ingredients slowly cook (shrimp turns orange, meat browns).
    When the timer ends, the soup boils and it says **Enjoy!**
 
