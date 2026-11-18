@@ -36,17 +36,18 @@
     spinach: ['Spinach', 20], broccoli: ['Broccoli', 20], corn: ['Corn', 60], tomato: ['Tomato', 40],
     lotus: ['Lotus root', 15], potato: ['Potato', 15], kelp: ['Kelp knot', 10], tofu: ['Tofu', 30],
     tofupuff: ['Tofu puff', 8], frozentofu: ['Frozen tofu', 20], fishtofu: ['Fish tofu', 20],
-    instant: ['Instant noodles', 85], udon: ['Udon', 200], glass: ['Glass noodles', 50], ricecake: ['Rice cake', 20],
+    bamboo: ['Bamboo shoot', 25], udon: ['Udon', 200], glass: ['Glass noodles', 50], ricecake: ['Rice cake', 20],
     egg: ['Egg', 50], quail: ['Quail eggs', 30], fishball: ['Fish ball', 15], beefball: ['Beef ball', 18],
     crab: ['Crab stick', 15], luncheon: ['Luncheon', 25], shrimp: ['Shrimp', 15], mussel: ['Mussel', 20],
+    octopus: ['Baby octopus', 25],
     porkbelly: ['Pork belly', 20], beef: ['Beef', 15], lamb: ['Lamb', 15], chicken: ['Chicken', 20],
   };
 
   const SHELVES = [
     ['shiitake', 'enoki', 'shimeji', 'kingoyster', 'woodear', 'napa', 'bokchoy', 'lettuce'],
     ['spinach', 'broccoli', 'corn', 'tomato', 'lotus', 'potato', 'kelp', 'ricecake'],
-    ['tofu', 'tofupuff', 'frozentofu', 'fishtofu', 'instant', 'udon', 'glass', 'egg'],
-    ['quail', 'fishball', 'beefball', 'crab', 'luncheon', 'shrimp', 'mussel'],
+    ['tofu', 'tofupuff', 'frozentofu', 'fishtofu', 'bamboo', 'udon', 'glass', 'egg'],
+    ['quail', 'fishball', 'beefball', 'crab', 'luncheon', 'shrimp', 'mussel', 'octopus'],
   ];
   const MEATS = ['porkbelly', 'beef', 'lamb', 'chicken'];
 

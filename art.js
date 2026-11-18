@@ -175,13 +175,11 @@
       shine(34, 36, 12, 4, -10, 0.45) +
       `<circle cx="60" cy="52" r="2.5" fill="#cf8a33"/><circle cx="70" cy="44" r="2" fill="#cf8a33"/>`,
 
-    instant: (c) => {
-      let s = `<rect x="15" y="20" width="70" height="60" rx="11" fill="${c ? '#f7dc8f' : '#f4cf63'}" ${S}/>`;
-      [33, 45, 57, 69].forEach((y) => {
-        s += `<path d="M21 ${y} q5 -6 10 0 t10 0 t10 0 t10 0 t10 0 t8 0" fill="none" stroke="#d29f34" stroke-width="3" stroke-linecap="round"/>`;
-      });
-      return s;
-    },
+    bamboo: (c) =>
+      `<path d="M50 10 C62 30 74 58 76 84 Q50 95 24 84 C26 58 38 30 50 10Z" fill="${c ? '#eed58a' : '#f6e4a4'}" ${S}/>` +
+      `<path d="M39 30 Q50 35 61 30 M32 46 Q50 53 68 46 M27 64 Q50 72 73 64" stroke="#d6bb63" stroke-width="3" fill="none" stroke-linecap="round"/>` +
+      `<path d="M42 74 v9 M50 75 v10 M58 74 v9 M44 55 v7 M56 55 v7" stroke="#e4cb78" stroke-width="2.5" stroke-linecap="round"/>` +
+      shine(42, 40, 4, 9, 20, 0.45),
 
     udon: () =>
       tube('M16 40 C34 20 50 58 66 34 S88 38 84 50', '#fffaf0', 8, 2.5) +
@@ -262,6 +260,18 @@
       `<ellipse cx="52" cy="51" rx="16" ry="29" transform="rotate(30 52 51)" fill="${c ? '#f29445' : '#f4b27a'}" ${st(2.4)}/>` +
       `<path d="M42 38 q10 10 6 26" stroke="${c ? '#d97a2e' : '#e3965a'}" stroke-width="3" fill="none" stroke-linecap="round"/>` +
       shine(36, 24, 6, 3, 30, 0.35),
+
+    octopus: (c) => {
+      const body = c ? '#e8525a' : '#c98fa8';
+      return tube('M34 58 C22 70 32 84 18 88', body, 8, 3) +
+        tube('M44 62 C38 76 50 84 40 93', body, 8, 3) +
+        tube('M56 62 C62 76 50 84 60 93', body, 8, 3) +
+        tube('M66 58 C78 70 68 84 82 88', body, 8, 3) +
+        `<path d="M23 57 C18 20 82 20 77 57 Q50 68 23 57Z" fill="${body}" ${S}/>` +
+        `<circle cx="40" cy="47" r="3.2" fill="${O}"/><circle cx="60" cy="47" r="3.2" fill="${O}"/>` +
+        `<ellipse cx="33" cy="54" rx="4" ry="2.4" fill="#f6b7c0" opacity=".8"/><ellipse cx="67" cy="54" rx="4" ry="2.4" fill="#f6b7c0" opacity=".8"/>` +
+        shine(40, 30, 8, 4, -25, 0.4);
+    },
 
     /* ---------------- freezer meats ---------------- */
     porkbelly: (c) => {
