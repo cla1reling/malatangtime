@@ -99,6 +99,13 @@
     { id: 'sour', en: 'Sour & Spicy', cn: '酸辣', items: ['blackvinegar', 'chilioil', 'lightsoy', 'garlic', 'redchili', 'cilantro'] },
   ];
 
+  // What actually sits on the counter (kept short on purpose).
+  const SHOW = {
+    bins: ['oyster', 'choppedchili', 'crushedpeanut', 'peanut', 'sesame', 'chilioil', 'garlic', 'sesameseed'],
+    squeeze: ['sriracha', 'sweetchili', 'hoisin', 'spicymayo'],
+    herbs: ['cilantro', 'scallion', 'celery', 'redchili', 'mustard', 'shallots'],
+    dry: ['salt', 'sugar', 'msg', 'chilipowder', 'sichuanpowder', 'cumin'],
+  };
   const ITEM = {};
   BINS.forEach((i) => (ITEM[i.id] = { ...i, kind: 'bin', motion: i.utensil === 'scoop' ? 'scoop' : 'ladle' }));
   SQUEEZE.forEach((i) => (ITEM[i.id] = { ...i, kind: 'squeeze', motion: 'squeeze', bowl: i.bowl }));
@@ -275,46 +282,31 @@
 
   function squeezeSVG(it) {
     const R = rng(hash(it.id));
-    const top = it.thin ? 46 : 42;
+    const c = it.col;
     let s =
-      `<ellipse cx="25" cy="137" rx="17" ry="3" fill="rgba(60,40,30,.2)"/>` +
-      `<path d="M25 3 L29.5 22 L20.5 22 Z" fill="${it.cap}" stroke="${O}" stroke-width="1.5" stroke-linejoin="round"/>` +
-      `<rect x="15" y="20" width="20" height="14" rx="4" fill="${it.cap}" stroke="${O}" stroke-width="2"/>` +
-      `<path d="M17 24 h16 M17 28 h16" stroke="${shade(it.cap, -0.18)}" stroke-width="1.2"/>` +
-      `<rect x="8" y="32" width="34" height="104" rx="12" fill="rgba(255,255,255,.45)" stroke="${O}" stroke-width="2"/>` +
-      `<rect x="10" y="${top}" width="30" height="${134 - top}" rx="10" fill="${it.col}" opacity="${it.alpha || 1}"/>`;
-    if (it.flecks) s += tex('flecks', { cols: it.flecks }, R, (r) => ({ x: 12 + r() * 26, y: top + 3 + r() * (126 - top) }), 1.4);
-    s += `<rect x="9" y="76" width="32" height="26" rx="3" fill="#fffaf0" opacity=".92" stroke="${O}" stroke-width="1.2"/>` +
-      `<rect x="14" y="82" width="22" height="3" rx="1.5" fill="${it.col}"/><rect x="14" y="89" width="15" height="2.5" rx="1.2" fill="#cdbfae"/><rect x="14" y="94" width="18" height="2.5" rx="1.2" fill="#cdbfae"/>` +
-      `<rect x="12" y="38" width="5" height="34" rx="2.5" fill="#fff" opacity=".5"/><rect x="12" y="106" width="5" height="22" rx="2.5" fill="#fff" opacity=".4"/>` +
-      // the little drip that makes it look used
-      `<path d="M27 9 q2.6 5.5 0 8.6 q-2.6 -3.1 0 -8.6Z" fill="${it.col}" stroke="${shade(it.col, -0.3)}" stroke-width=".6"/>` +
-      `<circle cx="25" cy="3.6" r="1.7" fill="${it.col}"/>`;
-    return svg('0 0 50 140', s);
-  }
-
-  function pourSVG(it, i) {
-    const R = rng(hash(it.id));
-    const wide = i % 3 === 1; // a little variety in bottle shapes
-    const L = wide ? 6 : 9, Rr = wide ? 44 : 41;
-    const body = `M20 44 C20 52 ${L} 54 ${L} 66 L${L} 138 Q${L} 146 ${L + 8} 146 L${Rr - 8} 146 Q${Rr} 146 ${Rr} 138 L${Rr} 66 C${Rr} 54 30 52 30 44 Z`;
-    const liq = `M${L + 1.5} 62 L${Rr - 1.5} 62 L${Rr - 1.5} 138 Q${Rr - 1.5} 144.5 ${Rr - 8} 144.5 L${L + 8} 144.5 Q${L + 1.5} 144.5 ${L + 1.5} 138 Z`;
-    let s =
-      `<ellipse cx="25" cy="147" rx="${(Rr - L) / 2 + 2}" ry="3" fill="rgba(60,40,30,.2)"/>` +
-      steelLine('M25 20 L25 9 L35 2', 3.4) +
-      `<rect x="19.5" y="15" width="11" height="8" rx="2" fill="#3b3536" stroke="${O}" stroke-width="1.4"/>` +
-      `<rect x="20" y="22" width="10" height="24" fill="rgba(255,255,255,.35)" stroke="${O}" stroke-width="1.8"/>` +
-      `<path d="${body}" fill="rgba(255,255,255,.35)"/>` +
-      `<path d="${liq}" fill="${it.col}" opacity="${it.alpha}"/>` +
-      `<path d="M${L + 2} 64 L${Rr - 2} 64" stroke="${shade(it.col, 0.35)}" stroke-width="1.6" opacity=".8"/>`;
-    if (it.corns) s += tex('corns', { col: it.corns }, R, (r) => ({ x: L + 6 + r() * (Rr - L - 12), y: 67 + r() * 10 }), 1.2);
-    if (it.bits) s += tex('scallionbits', {}, R, (r) => ({ x: L + 5 + r() * (Rr - L - 10), y: 136 + r() * 6 }), 1.6);
-    s += `<path d="${body}" fill="url(#sb-glass)" stroke="${O}" stroke-width="2"/>` +
-      `<rect x="${L + 4}" y="66" width="4" height="66" rx="2" fill="#fff" opacity=".55"/>` +
-      `<rect x="${L + 3}" y="96" width="${Rr - L - 6}" height="22" rx="3" fill="#fffaf0" opacity=".9" stroke="${O}" stroke-width="1.1"/>` +
-      `<rect x="${L + 7}" y="101" width="${Rr - L - 14}" height="3" rx="1.5" fill="${it.col === '#efecde' ? '#b9c8cf' : it.col}"/>` +
-      `<rect x="${L + 7}" y="108" width="${(Rr - L - 14) * 0.6}" height="2.4" rx="1.2" fill="#cdbfae"/>`;
-    return svg('0 0 50 150', s);
+      `<ellipse cx="52" cy="56" rx="40" ry="38" fill="rgba(60,40,30,.18)"/>` +
+      // bottle shoulder seen from above (clear plastic showing the sauce)
+      `<circle cx="50" cy="50" r="40" fill="${c}" opacity="${it.alpha || 0.95}"/>` +
+      `<circle cx="50" cy="50" r="40" fill="none" stroke="${O}" stroke-width="2.5"/>` +
+      `<circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="2" opacity=".35"/>`;
+    if (it.flecks) s += tex('flecks', { cols: it.flecks }, R, (r) => { const a = r() * Math.PI * 2, d = 25 + r() * 11; return { x: 50 + Math.cos(a) * d, y: 50 + Math.sin(a) * d }; }, 0.9);
+    s +=
+      // screw cap with ridges
+      `<circle cx="50" cy="50" r="23" fill="${it.cap}" stroke="${O}" stroke-width="2.5"/>` +
+      Array.from({ length: 16 }, (_, k) => {
+        const a = (k / 16) * Math.PI * 2;
+        return `<path d="M${f(50 + Math.cos(a) * 19)} ${f(50 + Math.sin(a) * 19)} L${f(50 + Math.cos(a) * 22.5)} ${f(50 + Math.sin(a) * 22.5)}" stroke="${shade(it.cap, -0.2)}" stroke-width="1.6"/>`;
+      }).join('') +
+      `<circle cx="50" cy="50" r="13" fill="${shade(it.cap, 0.12)}" stroke="${shade(it.cap, -0.25)}" stroke-width="1.5"/>` +
+      // pointed tip (cone seen from above) with a little drip
+      `<circle cx="50" cy="50" r="7.5" fill="${shade(it.cap, -0.08)}" stroke="${O}" stroke-width="1.6"/>` +
+      `<path d="M50 43 L53 50 L50 57 L47 50 Z" fill="${shade(it.cap, 0.3)}" opacity=".6"/>` +
+      `<circle cx="50" cy="50" r="2.4" fill="${c}" stroke="${O}" stroke-width="1"/>` +
+      `<path d="M53 52 q6 4 4 10 q-5 -1 -4 -10Z" fill="${c}" stroke="${shade(c, -0.3)}" stroke-width=".7"/>` +
+      // shine
+      `<path d="M22 34 A32 32 0 0 1 40 18" stroke="#fff" stroke-width="4" fill="none" opacity=".55" stroke-linecap="round"/>` +
+      `<path d="M38 36 A14 14 0 0 1 46 30" stroke="#fff" stroke-width="2.5" fill="none" opacity=".6" stroke-linecap="round"/>`;
+    return svg('0 0 100 100', s);
   }
 
   function herbSVG(it) {
@@ -331,7 +323,7 @@
       `<rect x="7" y="22" width="56" height="58" rx="11" fill="url(#sb-glass)" stroke="${O}" stroke-width="2"/>` +
       `<ellipse cx="35" cy="22" rx="28" ry="4.6" fill="rgba(255,255,255,.25)" stroke="${O}" stroke-width="2"/>` +
       `<rect x="12" y="30" width="4" height="42" rx="2" fill="#fff" opacity=".6"/>`;
-    return svg('0 0 70 84', s);
+    return svg('5 0 62 84', s);
   }
 
   function drySVG(it) {
@@ -361,34 +353,8 @@
         `<rect x="11" y="36" width="3.5" height="34" rx="1.7" fill="#fff" opacity=".6"/>`;
       if (it.sparkle) s += `<path d="M34 50 v5 M31.5 52.5 h5 M18 62 v4 M16 64 h4" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>`;
     }
-    return svg('0 0 50 80', s);
+    return svg('6 0 38 80', s);
   }
-
-  /* ---------- counter props ---------- */
-  const propBowls = svg('0 0 90 80', [0, 1, 2, 3, 4].map((i) => {
-    const y = 66 - i * 9;
-    return `<path d="M12 ${y} Q16 ${y + 13} 45 ${y + 14} Q74 ${y + 13} 78 ${y} Z" fill="#fffdf8" stroke="${O}" stroke-width="2"/>` +
-      `<path d="M20 ${y + 6} Q45 ${y + 12} 70 ${y + 6}" stroke="#8fb0d6" stroke-width="2" fill="none"/>` +
-      `<ellipse cx="45" cy="${y}" rx="33" ry="7" fill="#fffdf8" stroke="${O}" stroke-width="2"/>`;
-  }).join('') + `<ellipse cx="45" cy="30" rx="26" ry="4.5" fill="#f1ece2"/>`);
-  const propSpoons = svg('0 0 70 90',
-    [[-22, '#fffdf8'], [-8, '#fffdf8'], [8, '#fffdf8'], [22, '#fffdf8']].map(([r, c]) =>
-      `<g transform="rotate(${r} 35 70)"><path d="M33 72 L33 22" stroke="${O}" stroke-width="7" stroke-linecap="round"/><path d="M33 72 L33 22" stroke="${c}" stroke-width="4" stroke-linecap="round"/><ellipse cx="33" cy="16" rx="7" ry="9" fill="${c}" stroke="${O}" stroke-width="2"/></g>`).join('') +
-    `<path d="M14 50 L18 86 L52 86 L56 50 Z" fill="#e8603c" stroke="${O}" stroke-width="2.2" stroke-linejoin="round"/>` +
-    `<path d="M16 60 L54 60" stroke="#f6a07c" stroke-width="3"/><ellipse cx="35" cy="50" rx="21" ry="4" fill="#c94a2a" stroke="${O}" stroke-width="2"/>`);
-  const propNapkins = svg('0 0 80 70',
-    `<path d="M14 18 l8 -10 l8 10 l8 -10 l8 10 l8 -10 l8 10 V54 H14 Z" fill="#fffdf8" stroke="${O}" stroke-width="1.8" stroke-linejoin="round"/>` +
-    `<path d="M20 24 h40 M20 30 h40" stroke="#ece6da" stroke-width="1.6"/>` +
-    `<rect x="8" y="34" width="64" height="30" rx="5" fill="url(#sb-steel)" stroke="${O}" stroke-width="2"/>` +
-    `<rect x="14" y="42" width="52" height="5" rx="2.5" fill="#fff" opacity=".7"/>`);
-  const propPot = svg('0 0 120 110',
-    `<ellipse cx="60" cy="102" rx="44" ry="5" fill="rgba(60,40,30,.2)"/>` +
-    `<path d="M14 52 Q14 98 60 100 Q106 98 106 52 Z" fill="#8a4a2a" stroke="${O}" stroke-width="2.5"/>` +
-    `<path d="M24 70 Q30 92 56 94" stroke="#b56a3e" stroke-width="4" fill="none" stroke-linecap="round"/>` +
-    `<ellipse cx="60" cy="52" rx="46" ry="12" fill="#6e3a20" stroke="${O}" stroke-width="2.5"/>` +
-    `<ellipse cx="60" cy="53" rx="39" ry="8.5" fill="#d8432a"/>` +
-    `<circle cx="46" cy="52" r="3" fill="#ff8a5c" opacity=".7"/><circle cx="70" cy="55" r="2.2" fill="#ff8a5c" opacity=".7"/><circle cx="58" cy="50" r="1.6" fill="#ffd0b0"/>` +
-    `<path d="M8 50 q-6 2 0 8 M112 50 q6 2 0 8" stroke="${O}" stroke-width="4" fill="none" stroke-linecap="round"/>`);
 
   const utensils = {
     ladle: (it) => svg('0 0 70 70', steelLine('M26 40 L66 4', 6) + `<path d="M4 40 a20 12 0 0 0 40 0 Z" fill="#a9b4bb" stroke="#6f7a82" stroke-width="2"/><ellipse cx="24" cy="40" rx="20" ry="6" fill="${it.base}" stroke="#6f7a82" stroke-width="2"/>`),
@@ -460,20 +426,8 @@
     `<button class="sb-item ${cls}" data-id="${it.id}" aria-label="${it.en} (${it.cn}). ${it.desc}. Add to bowl">
       <span class="sb-art">${art}</span><span class="sb-label">${it.en}</span></button>`;
 
-  function sprinkles() {
-    const R = rng(42);
-    let s = '';
-    for (let i = 0; i < 26; i++) {
-      const x = R() * 100, y = R() * 100;
-      const k = R();
-      const fill = k < 0.5 ? (R() < 0.2 ? '#2a2422' : '#f2e3bc') : k < 0.8 ? '#4ea83c' : '#d9281c';
-      s += `<i style="left:${f(x)}%;top:${f(y)}%;background:${fill};transform:rotate(${Math.round(R() * 180)}deg);${k < 0.5 ? '' : 'width:5px;height:3px;border-radius:2px;'}"></i>`;
-    }
-    return `<div class="sb-crumbs" aria-hidden="true">${s}</div>`;
-  }
-
   function build(root) {
-    const back = BINS.filter((b) => !b.front), front = BINS.filter((b) => b.front);
+    const pick = (ids) => ids.map((id) => ITEM[id]);
     root.innerHTML = `
       <div class="sb-wall">
         <div class="sb-lamps" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -481,11 +435,11 @@
           <div class="sb-shelf">
             <div class="sb-group">
               <h3 class="sb-cat">Fresh herbs &amp; toppings <span class="cn">香料小料</span></h3>
-              <div class="sb-grid herbs">${HERBS.map((it) => itemBtn(it, herbSVG(it), 'jar')).join('')}</div>
+              <div class="sb-grid">${pick(SHOW.herbs).map((it) => itemBtn(it, herbSVG(it), 'jar')).join('')}</div>
             </div>
             <div class="sb-group">
               <h3 class="sb-cat">Dry seasonings <span class="cn">干调料</span></h3>
-              <div class="sb-grid dry">${DRY.map((it) => itemBtn(it, drySVG(it), 'shaker')).join('')}</div>
+              <div class="sb-grid">${pick(SHOW.dry).map((it) => itemBtn(it, drySVG(it), 'shaker')).join('')}</div>
             </div>
             <div class="sb-plank" aria-hidden="true"></div>
           </div>
@@ -498,34 +452,15 @@
       </div>
       <div class="sb-counter">
         <div class="sb-main">
+          <div class="sb-side">
+            <h3 class="sb-cat">Squeeze bottles <span class="cn">挤挤瓶</span></h3>
+            <div class="sb-caddy">${pick(SHOW.squeeze).map((it) => itemBtn(it, squeezeSVG(it), 'bottle')).join('')}</div>
+          </div>
           <div class="sb-center">
             <h3 class="sb-cat">Sauces <span class="cn">酱料</span></h3>
-            <div class="sb-well">
-              <div class="sb-row back">${back.map((it) => itemBtn(it, binSVG(it), 'bin')).join('')}</div>
-              <div class="sb-row front">${front.map((it) => itemBtn(it, binSVG(it), 'bin' + (it.big ? ' big' : ''))).join('')}</div>
-            </div>
+            <div class="sb-well">${pick(SHOW.bins).map((it) => itemBtn(it, binSVG(it), 'bin' + (it.big ? ' big' : ''))).join('')}</div>
           </div>
-          <div class="sb-sides">
-            <div class="sb-side left">
-              <h3 class="sb-cat">Squeeze bottles <span class="cn">挤挤瓶</span></h3>
-              <div class="sb-caddy">${SQUEEZE.map((it) => itemBtn(it, squeezeSVG(it), 'bottle')).join('')}</div>
-              <div class="sb-drip" aria-hidden="true"><i></i><i></i><i></i></div>
-            </div>
-            <div class="sb-side right">
-              <h3 class="sb-cat">Oils, soy &amp; vinegar <span class="cn">油醋</span></h3>
-              <div class="sb-pours">${POURS.map((it, i) => itemBtn(it, pourSVG(it, i), 'pour')).join('')}</div>
-            </div>
-          </div>
-          <p class="sb-swipe-hint" aria-hidden="true">← swipe for more bottles →</p>
         </div>
-        <div class="sb-front">
-          <div class="sb-prop">${propBowls}<span>bowls</span></div>
-          <div class="sb-prop">${propSpoons}<span>spoons</span></div>
-          <div class="sb-prop">${propNapkins}<span>napkins</span></div>
-          <div class="sb-sign"><strong>Sauce Bar</strong><span class="cn">调料台</span></div>
-          <div class="sb-prop pot"><div class="sb-steam" aria-hidden="true"><i></i><i></i><i></i></div>${propPot}<span>broth</span></div>
-        </div>
-        ${sprinkles()}
       </div>`;
   }
 
@@ -589,8 +524,8 @@
     g.style.height = h + 'px';
     document.body.appendChild(g);
     const sx = from.left + from.width / 2 - w / 2, sy = from.top + from.height / 2 - h / 2;
-    const tx = to.left + to.width / 2 - w / 2 + (it.kind === 'pour' || it.kind === 'squeeze' ? -w * 0.4 : 0);
-    const ty = to.top - h * (it.kind === 'bin' || it.kind === 'herb' ? 0.45 : 0.8);
+    const tx = to.left + to.width / 2 - w / 2;
+    const ty = to.top - h * (it.kind === 'bin' || it.kind === 'herb' || it.kind === 'squeeze' ? 0.45 : 0.8);
     const lift = Math.min(sy, ty) - 90;
     await g.animate([
       { transform: `translate(${sx}px, ${sy}px)` },
@@ -603,7 +538,7 @@
       ladle: [[{ transform: 'rotate(0)' }, { transform: 'rotate(-55deg)' }], 420],
       scoop: [[{ transform: 'rotate(0)' }, { transform: 'rotate(-70deg)' }], 380],
       tongs: [[{ transform: 'scale(1)' }, { transform: 'scale(1.08) rotate(-6deg)' }, { transform: 'scale(1)' }], 360],
-      squeeze: [[{ transform: 'rotate(0)' }, { transform: 'rotate(150deg) scaleX(1)', offset: 0.35 }, { transform: 'rotate(150deg) scaleX(.82)', offset: 0.55 }, { transform: 'rotate(150deg) scaleX(1)', offset: 0.7 }, { transform: 'rotate(150deg) scaleX(.82)' }], 620],
+      squeeze: [[{ transform: 'scale(1)' }, { transform: 'scale(.82, .9)', offset: 0.3 }, { transform: 'scale(1)', offset: 0.55 }, { transform: 'scale(.82, .9)', offset: 0.8 }, { transform: 'scale(1)' }], 620],
       pour: [[{ transform: 'rotate(0)' }, { transform: 'rotate(118deg)', offset: 0.4 }, { transform: 'rotate(118deg)' }], 620],
       shake: [[{ transform: 'rotate(0)' }, { transform: 'rotate(165deg)', offset: 0.3 }, { transform: 'rotate(165deg) translateY(-6px)', offset: 0.45 }, { transform: 'rotate(165deg) translateY(4px)', offset: 0.6 }, { transform: 'rotate(165deg) translateY(-6px)', offset: 0.75 }, { transform: 'rotate(165deg)' }], 640],
       spoon: [[{ transform: 'rotate(0)' }, { transform: 'rotate(120deg)' }], 420],

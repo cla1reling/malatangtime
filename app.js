@@ -597,7 +597,9 @@
     if (stage === 'weigh') renderWeigh();
     if (stage === 'cook') enterCook();
     if (!(stage === 'cook' && state.timer && state.timer.done)) say(...SPEECH[stage]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // the sauce bar is tall, so jump straight to it instead of the page header
+    const top = stage === 'sauce' ? Math.max(0, $('#stage-sauce').getBoundingClientRect().top + window.scrollY - 6) : 0;
+    window.scrollTo({ top, behavior: 'smooth' });
   }
 
   $('#toShelf').addEventListener('click', () => state.broth && go('shelf'));
