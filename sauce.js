@@ -422,9 +422,17 @@
   }
 
   /* ======================= BUILD THE BAR ======================= */
+  // Short names so every label fits on one line in a same-size card (full names stay in the tooltip).
+  const SHORT = {
+    cilantro: 'Cilantro', scallion: 'Scallions', celery: 'Celery', redchili: 'Red Chili', mustard: 'Pickles', shallots: 'Shallots',
+    salt: 'Salt', sugar: 'Sugar', msg: 'MSG', chilipowder: 'Chili', sichuanpowder: 'Peppercorn', cumin: 'Cumin',
+    sriracha: 'Sriracha', sweetchili: 'Sweet Chili', hoisin: 'Hoisin', spicymayo: 'Spicy Mayo',
+    oyster: 'Oyster', choppedchili: 'Pickled Chili', crushedpeanut: 'Peanuts', peanut: 'Peanut Sauce',
+    sesame: 'Sesame Paste', chilioil: 'Chili Oil', garlic: 'Garlic', sesameseed: 'Sesame Seeds',
+  };
   const itemBtn = (it, art, cls = '') =>
     `<button class="sb-item ${cls}" data-id="${it.id}" aria-label="${it.en} (${it.cn}). ${it.desc}. Add to bowl">
-      <span class="sb-art">${art}</span><span class="sb-label">${it.en}</span></button>`;
+      <span class="sb-art">${art}</span><span class="sb-label">${SHORT[it.id] || it.en}</span></button>`;
 
   function build(root) {
     const pick = (ids) => ids.map((id) => ITEM[id]);
