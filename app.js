@@ -56,6 +56,7 @@
     shelf: ['Grab whatever looks yummy with the tongs!', 'happy'],
     freezer: ['Brrr! Slide a freezer door open ❄', 'wow'],
     weigh: ['Onto the scale… heavier bowl, longer study!', 'wow'],
+    sauce: ['Sauce time! Mix your perfect dip 🥢', 'happy'],
     cook: ['Study while it simmers. I’ll watch the pot 📚', 'happy'],
     done: ['Ding! It’s ready. Enjoy~ 慢慢吃!', 'happy'],
   };
@@ -67,6 +68,7 @@
     bowl: [], // {uid, id, bx, by, br, px, py}
     rate: 10,
     timer: null, // {totalMs, endAt, pausedLeft, minutes, grams, done}
+    sauce: [],
   };
   let uid = 0;
   let tick = null;
@@ -74,7 +76,7 @@
   const save = () => {
     try {
       if (state.timer) localStorage.setItem(STORE_KEY, JSON.stringify({
-        broth: state.broth, bowl: state.bowl, rate: state.rate, timer: state.timer,
+        broth: state.broth, bowl: state.bowl, rate: state.rate, timer: state.timer, sauce: state.sauce,
       }));
       else localStorage.removeItem(STORE_KEY);
     } catch (e) { /* storage unavailable */ }
@@ -448,6 +450,7 @@
     const minutes = studyMinutes(g, state.rate);
     const totalMs = minutes * UNIT_MS;
     state.bowl.forEach((p, i) => Object.assign(p, potPos(i)));
+    state.sauce = window.SauceBar ? window.SauceBar.get() : [];
     state.timer = { totalMs, endAt: Date.now() + totalMs, pausedLeft: null, minutes, grams: g, done: false };
     save();
     try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (e) {}
@@ -456,6 +459,10 @@
 
   function enterCook() {
     renderPot();
+    const dip = $('#dip');
+    const hasDip = window.SauceBar && state.sauce && state.sauce.length;
+    dip.hidden = !hasDip;
+    dip.innerHTML = hasDip ? window.SauceBar.bowlSVG(state.sauce, 'dipClip') + '<span>your dip</span>' : '';
     const t = state.timer;
     const d = new Date();
     $('#timerDate').textContent = d.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', weekday: 'short' }).toUpperCase();
@@ -546,6 +553,8 @@
     state.broth = null;
     state.bowl = [];
     state.timer = null;
+    state.sauce = [];
+    if (window.SauceBar) window.SauceBar.reset();
     save();
     $$('.broth-card').forEach((c) => c.setAttribute('aria-pressed', 'false'));
     $('#toShelf').disabled = true;
@@ -555,7 +564,7 @@
   }
 
   /* ---------------- navigation ---------------- */
-  const ORDER = ['broth', 'shelf', 'freezer', 'weigh', 'cook'];
+  const ORDER = ['broth', 'shelf', 'freezer', 'weigh', 'sauce', 'cook'];
   function say(text, mood = 'happy') {
     $('#bubble').textContent = text;
     $('#mascot').innerHTML = mascot(mood);
@@ -579,6 +588,11 @@
       renderCounterBasket();
       $('#counterNext').textContent = stage === 'shelf' ? 'Next: meats →' : 'Weigh it →';
     }
+    const tray = stage === 'sauce';
+    $('#sauceTray').hidden = !tray;
+    document.body.classList.toggle('has-sauce-tray', tray);
+    if (!tray) { const tip = $('#sauceTip'); if (tip) tip.hidden = true; }
+    if (tray && window.SauceBar) window.SauceBar.enter();
     tongsEl.classList.remove('show');
     if (stage === 'weigh') renderWeigh();
     if (stage === 'cook') enterCook();
@@ -594,7 +608,11 @@
     go('weigh');
   });
   $('#backToShelf').addEventListener('click', () => go('shelf'));
-  $('#startCook').addEventListener('click', startCooking);
+  $('#startCook').addEventListener('click', () => go('sauce'));
+  if (window.SauceBar) {
+    window.SauceBar.onDone = startCooking;
+    window.SauceBar.onBack = () => go('weigh');
+  }
   $$('#steps li').forEach((li, i) =>
     li.addEventListener('click', () => {
       const cur = ORDER.indexOf(state.stage);
@@ -613,6 +631,8 @@
     state.bowl = saved.bowl || [];
     state.rate = saved.rate || 10;
     state.timer = saved.timer;
+    state.sauce = saved.sauce || [];
+    if (window.SauceBar) window.SauceBar.set(state.sauce);
     uid = state.bowl.reduce((m, p) => Math.max(m, p.uid || 0), 0);
     go('cook');
   } else {

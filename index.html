@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Gaegu:wght@400;700&family=ZCOOL+KuaiLe&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="sauce.css" />
 </head>
 <body>
   <header class="shop">
@@ -25,7 +26,8 @@
       <li data-step="shelf"><span>2</span>Veggies</li>
       <li data-step="freezer"><span>3</span>Meats</li>
       <li data-step="weigh"><span>4</span>Weigh</li>
-      <li data-step="cook"><span>5</span>Study</li>
+      <li data-step="sauce"><span>5</span>Sauce</li>
+      <li data-step="cook"><span>6</span>Study</li>
     </ol>
   </header>
 
@@ -98,13 +100,19 @@
           <div class="study-time">Study time <strong id="studyTime">–</strong></div>
           <div class="receipt-actions">
             <button class="btn ghost" id="backToShelf">← Add more</button>
-            <button class="btn primary" id="startCook">Put it on the stove 🔥</button>
+            <button class="btn primary" id="startCook">Next: sauce bar →</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 5. COOK -->
+    <!-- 5. SAUCE BAR -->
+    <section class="stage" id="stage-sauce" data-stage="sauce" hidden>
+      <h2 class="stage-title">Sauce bar 调料台 <small>hover to read about it · click to add it to your dipping bowl</small></h2>
+      <div class="sauce-bar" id="sauceBar"></div>
+    </section>
+
+    <!-- 6. COOK -->
     <section class="stage" id="stage-cook" data-stage="cook" hidden>
       <div class="cook-layout">
         <div class="stove-area">
@@ -113,6 +121,7 @@
             <span class="cn">开吃啦～</span>
           </div>
           <div class="pot-wrap" id="potWrap"></div>
+          <div class="dip" id="dip" hidden></div>
           <div class="stove">
             <div class="grate"></div>
             <div class="flames" id="flames"><i></i><i></i><i></i><i></i><i></i></div>
@@ -158,11 +167,44 @@
     </div>
   </footer>
 
+  <!-- dipping bowl tray (sauce bar stage) -->
+  <footer class="sauce-tray" id="sauceTray" hidden>
+    <div class="st-bowl" id="sbBowl" aria-hidden="true"></div>
+    <div class="st-info">
+      <div class="st-title">Your dipping bowl <span id="sbHeat"></span></div>
+      <div class="st-chips" id="sbChips" aria-live="polite"></div>
+    </div>
+    <div class="st-actions">
+      <button class="btn small ghost" id="sbBack">← Back</button>
+      <button class="btn small ghost" id="sbReset">Reset Bowl</button>
+      <div class="st-blend">
+        <button class="btn small" id="sbBlendBtn" aria-expanded="false" aria-controls="sbMenu">Try a House Blend</button>
+        <div class="st-menu" id="sbMenu" hidden></div>
+      </div>
+      <button class="btn primary" id="sbDone">Start studying 🔥</button>
+    </div>
+  </footer>
+  <div id="sauceTip" class="sauce-tip" role="tooltip" hidden></div>
+
+  <!-- shared gradients for the sauce bar art -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="sb-steel" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f6f8f9"/><stop offset=".55" stop-color="#d2d9de"/><stop offset="1" stop-color="#aeb9c1"/>
+      </linearGradient>
+      <linearGradient id="sb-glass" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".45"/><stop offset=".3" stop-color="#e8f3f6" stop-opacity=".12"/>
+        <stop offset=".8" stop-color="#e8f3f6" stop-opacity=".08"/><stop offset="1" stop-color="#cfe3ea" stop-opacity=".4"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
   <div id="tongs" class="tongs" aria-hidden="true"></div>
   <div id="held" class="held" aria-hidden="true"></div>
   <div id="toast" class="toast" role="status" hidden></div>
 
   <script src="art.js"></script>
+  <script src="sauce.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
